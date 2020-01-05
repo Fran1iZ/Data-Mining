@@ -11,7 +11,22 @@ __version__ = "1.0.0"
 import sqlite3
 import pandas as pd
 import numpy as np
+import sklearn
+from sklearn import preprocessing
 import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn import preprocessing
+from sklearn.cluster import KMeans
+import plotly as py
+import plotly.graph_objs as go
+from plotly.offline import init_notebook_mode
+import scipy
+from scipy.cluster.hierarchy import dendrogram, linkage
+from sklearn.cluster import AgglomerativeClustering
+import sklearn.metrics as sm
+from sklearn.decomposition import PCA
+from kmodes import kmodes
+from sklearn.preprocessing import StandardScaler
 import os
 
 
@@ -47,6 +62,8 @@ df_engage.rename(index = str, columns = {'Customer Identity':'c_ID',
                                       'Customer Monetary Value':'Customer_Value',
                                       'Claims Rate':'Claims_Rate'},inplace = True )
 
+df_engage.drop(columns=['index'],inplace=True)
+df_lob.drop(columns=['index'],inplace=True)
 
 df_engage.loc[df_engage['Educational_Degree'] == '1 - Basic', 'Educational_Degree'] = int('1')
 df_engage.loc[df_engage['Educational_Degree'] == '2 - High School', 'Educational_Degree'] = int('2')
