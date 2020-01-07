@@ -14,7 +14,7 @@ scaler = StandardScaler()
 
 Engage_Normalized = scaler.fit_transform(Work_engage)
 Engage_Normalized = pd.DataFrame(Engage_Normalized, columns=Work_engage.columns)
-
+"""
 ########
 #KMeans#
 ########
@@ -82,16 +82,50 @@ E_MS_Clusters=scaler.inverse_transform(X=E_MS_cluster_centers)
 ########
 #DBSCAN#
 ########
-
+"""
 
 E_dbscan = DBSCAN(eps=0.5,min_samples=10).fit(Engage_Normalized)
 E_dbs_labels = E_dbscan.labels_
 
-E_n_clusters_ = len(set(E_dbs_labels)) - (1 if -1 in labels else 0)
+E_n_clusters_ = len(set(E_dbs_labels)) - (1 if -1 in E_dbs_labels else 0)
 unique_clusters , counts_clusters = np.unique(E_dbscan.labels_, return_counts = True)
+
+E_pcaDBS = PCA(n_components=2).fit(Engage_Normalized)
+E_pca_2dDBS = E_pcaDBS.transform(Engage_Normalized)
+for i in range(0, pca_2dDBS.shape[0]):
+    if E_dbs_labels[i] == 0:
+        c1 = plt.scatter(E_pca_2dDBS[i,0],E_pca_2dDBS[i,1],c='r',marker='+')
+    elif E_dbs_labels[i] == 1:
+        c2 = plt.scatter(E_pca_2dDBS[i,0],E_pca_2dDBS[i,1],c='g',marker='o')
+    elif E_dbs_labels[i] == 2:
+        c4 = plt.scatter(E_pca_2dDBS[i,0],E_pca_2dDBS[i,1],c='k',marker='v')
+    elif E_dbs_labels[i] == 3:
+        c5 = plt.scatter(E_pca_2dDBS[i,0],E_pca_2dDBS[i,1],c='y',marker='s')
+    elif E_dbs_labels[i] == 4:
+        c6 = plt.scatter(E_pca_2dDBS[i,0],E_pca_2dDBS[i,1],c='m',marker='p')
+    elif E_dbs_labels[i] == 5:
+        c7 = plt.scatter(E_pca_2dDBS[i,0],E_pca_2dDBS[i,1],c='c',marker='H')
+    elif E_dbs_labels[i] == -1:
+        c3 = plt.scatter(E_pca_2dDBS[i,0],E_pca_2dDBS[i,1],c='b',marker='*')
+
+plt.legend([c1, c2, c3], ['Cluster 1', 'Cluster 2','Noise'])
+plt.title('DBSCAN finds N clusters and noise')
+plt.show()
+
 
 
 #PCA
+from sklearn.decomposition import PCA
+pca = PCA(n_components= Work_engage.shape[1])
+principalComponents = pca.fit_transform(Engage_Normalized)
+
+E_a = pca.inverse_transform(principalComponents)
+
+
+
+
+
+
 ####
 #EM#
 ####

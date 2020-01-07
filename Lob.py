@@ -13,7 +13,7 @@ scaler = StandardScaler()
 
 Lob_Normalized = scaler.fit_transform(work_lob)
 Lob_Normalized = pd.DataFrame(Lob_Normalized, columns=work_lob.columns)
-
+"""
                                 #########
                                 #K-Means#
                                 #########
@@ -78,21 +78,21 @@ MS_n_clusters=len(unique_MS_labels)
 
 MS_Clusters = scaler.inverse_transform(X=MS_cluster_centers)
 
-pca = PCA(n_components=2).fit(Lob_Normalized)
-pca_2d=pca.transform(Lob_Normalized)
-for p in range(0,pca_2d.shape[0]):
+pcaMS = PCA(n_components=2).fit(Lob_Normalized)
+pca_2dMS=pcaMS.transform(Lob_Normalized)
+for p in range(0,pca_2dMS.shape[0]):
     if MS_labels[p] == 0:
-        c1 = plt.scatter(pca_2d[p,0],pca_2d[p,1], c='r', marker='+')
+        c1 = plt.scatter(pca_2dMS[p,0],pca_2dMS[p,1], c='r', marker='+')
     if MS_labels[p] == 1:
-        c2 = plt.scatter(pca_2d[p,0],pca_2d[p,1], c='g', marker='*')
+        c2 = plt.scatter(pca_2dMS[p,0],pca_2dMS[p,1], c='g', marker='*')
     if MS_labels[p] == 2:
-        c3 = plt.scatter(pca_2d[p,0],pca_2d[p,1], c='b', marker='H')
+        c3 = plt.scatter(pca_2dMS[p,0],pca_2dMS[p,1], c='b', marker='H')
 
 plt.legend([c1,c2,c3], ['C1','C2','C3'])
 plt.title('MS')
 plt.show()
 
-
+"""
 ########
 #DBSCAN#
 ########
@@ -105,6 +105,37 @@ dbsn_clusters_ = len(set(dbslabels)) - (1 if -1 in dbslabels else 0)
 unique_clusters , counts_clusters = np.unique(dbscan.labels_, return_counts = True)
 
 
+pcaDBS = PCA(n_components=2).fit(Lob_Normalized)
+pca_2dDBS = pcaDBS.transform(Lob_Normalized)
+for i in range(0, pca_2dDBS.shape[0]):
+    if dbslabels[i] == 0:
+        c1 = plt.scatter(pca_2dDBS[i,0],pca_2dDBS[i,1],c='r',marker='+')
+    elif dbslabels[i] == 1:
+        c2 = plt.scatter(pca_2dDBS[i,0],pca_2dDBS[i,1],c='g',marker='o')
+    elif dbslabels[i] == 2:
+        c4 = plt.scatter(pca_2dDBS[i,0],pca_2dDBS[i,1],c='k',marker='v')
+    elif dbslabels[i] == 3:
+        c5 = plt.scatter(pca_2dDBS[i,0],pca_2dDBS[i,1],c='y',marker='s')
+    elif dbslabels[i] == 4:
+        c6 = plt.scatter(pca_2dDBS[i,0],pca_2dDBS[i,1],c='m',marker='p')
+    elif dbslabels[i] == 5:
+        c7 = plt.scatter(pca_2dDBS[i,0],pca_2dDBS[i,1],c='c',marker='H')
+    elif dbslabels[i] == -1:
+        c3 = plt.scatter(pca_2dDBS[i,0],pca_2dDBS[i,1],c='b',marker='*')
+
+plt.legend([c1, c2, c3], ['Cluster 1', 'Cluster 2','Noise'])
+plt.title('DBSCAN finds N clusters and noise')
+plt.show()
+
+
 """
 PCA
 """
+
+from sklearn.decomposition import PCA
+pca = PCA(n_components= work_lob.shape[1])
+principalComponents = pca.fit_transform(Lob_Normalized)
+
+a = pca.inverse_transform(principalComponents)
+
+
