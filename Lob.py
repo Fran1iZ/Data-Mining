@@ -13,7 +13,7 @@ scaler = StandardScaler()
 
 Lob_Normalized = scaler.fit_transform(work_lob)
 Lob_Normalized = pd.DataFrame(Lob_Normalized, columns=work_lob.columns)
-"""
+
                                 #########
                                 #K-Means#
                                 #########
@@ -92,7 +92,7 @@ plt.legend([c1,c2,c3], ['C1','C2','C3'])
 plt.title('MS')
 plt.show()
 
-"""
+
 ########
 #DBSCAN#
 ########
@@ -128,9 +128,9 @@ plt.title('DBSCAN finds N clusters and noise')
 plt.show()
 
 
-"""
-PCA
-"""
+#####
+#PCA#
+#####
 
 from sklearn.decomposition import PCA
 pca = PCA(n_components= work_lob.shape[1])

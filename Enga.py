@@ -14,7 +14,7 @@ scaler = StandardScaler()
 
 Engage_Normalized = scaler.fit_transform(Work_engage)
 Engage_Normalized = pd.DataFrame(Engage_Normalized, columns=Work_engage.columns)
-"""
+
 ########
 #KMeans#
 ########
@@ -82,7 +82,6 @@ E_MS_Clusters=scaler.inverse_transform(X=E_MS_cluster_centers)
 ########
 #DBSCAN#
 ########
-"""
 
 E_dbscan = DBSCAN(eps=0.5,min_samples=10).fit(Engage_Normalized)
 E_dbs_labels = E_dbscan.labels_
@@ -113,8 +112,10 @@ plt.title('DBSCAN finds N clusters and noise')
 plt.show()
 
 
+#####
+#PCA#
+#####
 
-#PCA
 from sklearn.decomposition import PCA
 pca = PCA(n_components= Work_engage.shape[1])
 principalComponents = pca.fit_transform(Engage_Normalized)
