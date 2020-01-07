@@ -7,6 +7,7 @@ Order of running
 (1) - Pre-Processing.py
 (2) - Data_Clean.py
 (3) - Either Lob.py or Enga.py for their respective clusters
+(4) - Run Cross.py only after running Enga.py
 """
 __author__ = "Francisco Neves, Francisco Jorge and Pedro Carmona"
 __version__ = "1.0.0"
