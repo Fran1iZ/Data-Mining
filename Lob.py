@@ -26,12 +26,13 @@ for n in range(1,21):
 
 plt.plot(range(1,21),Ldistortion)
 #3 clusters
-
 kmeans = KMeans(n_clusters=3,random_state=0,n_init=10,max_iter=2000).fit(Lob_Normalized)
 kmeanCluster = pd.DataFrame(kmeans.cluster_centers_)
+Lkmcl = pd.DataFrame(kmeans.labels_)
 kmeanCluster = pd.DataFrame(scaler.inverse_transform(X=kmeanCluster), columns = work_lob.columns)
+kmeanCluster = pd.DataFrame(pd.concat([pd.DataFrame(kmeanCluster),Lkmcl[0].value_counts()],axis=1))
 
-#print(silhouette_score(Lob_Normalized,kmeans.labels_,metric='euclidean'))
+
 
                             ##############
                             #Hierarchical#
@@ -50,6 +51,7 @@ HClustering = AgglomerativeClustering(n_clusters=3,affinity='euclidean',linkage=
 HC_labels = pd.DataFrame(HClustering.labels_)
 HC_labels.columns = ['Cluster']
 #print(HC_labels)
+
 
 
 #print(silhouette_score(Lob_Normalized,HClustering.labels_,metric='euclidean'))
@@ -126,7 +128,6 @@ for i in range(0, pca_2dDBS.shape[0]):
 plt.legend([c1, c2, c3], ['Cluster 1', 'Cluster 2','Noise'])
 plt.title('DBSCAN finds N clusters and noise')
 plt.show()
-
 
 #####
 #PCA#

@@ -29,14 +29,18 @@ plt.plot(range(1,21),Edistortion)
 
 E_kmeans = KMeans(n_clusters=3,random_state=0,n_init=10,max_iter=2000).fit(Engage_Normalized)
 E_kmeanCluster = pd.DataFrame(E_kmeans.cluster_centers_)
+kmcl = pd.DataFrame(E_kmeans.labels_)
 E_kmeanCluster = pd.DataFrame(scaler.inverse_transform(X=E_kmeanCluster), columns = Work_engage.columns)
+print(silhouette_score(Engage_Normalized,E_kmeans.labels_,metric='euclidean'))
+E_kmeanCluster = pd.DataFrame(pd.concat([pd.DataFrame(E_kmeanCluster),kmcl[0].value_counts()],axis=1))
+
 
 ##############
 #Hierarchical#
 ##############
 
 E_Z = linkage(Engage_Normalized, method='ward')
-dendrogram(Z, truncate_mode='lastp',p=10,orientation='top',leaf_rotation=45,leaf_font_size=10,show_contracted=True,show_leaf_counts=True)
+dendrogram(E_Z, truncate_mode='lastp',p=10,orientation='top',leaf_rotation=45,leaf_font_size=10,show_contracted=True,show_leaf_counts=True)
 plt.show()
 
 
@@ -45,7 +49,7 @@ E_HClustering = AgglomerativeClustering(n_clusters=3,affinity='euclidean',linkag
 E_HC_labels = pd.DataFrame(E_HClustering.labels_)
 E_HC_labels.columns = ['Cluster']
 
-#print(silhouette_score(Engage_Normalized,E_HClustering.labels_,metric='euclidean'))
+print(silhouette_score(Engage_Normalized,E_HClustering.labels_,metric='euclidean'))
 
 E_Affinity = pd.DataFrame(pd.concat([pd.DataFrame(Engage_Normalized),E_HC_labels],axis=1),columns=['First_Policy_Year','Salary','Customer_Value','Claims_Rate','Cluster'])
 
@@ -58,13 +62,23 @@ E_HierarchicalCluster = pd.DataFrame(scaler.inverse_transform(X=E_to_revert),col
 ########
 
 
+
 Eng_Cat = baseWork_engage[['Educational_Degree','Living_Area','Children']].astype('str')
 
 
 kmodes = KModes(n_clusters=3, init='random', n_init=50, verbose=1)
 kmclusters = kmodes.fit_predict(Eng_Cat)
+kluster = pd.DataFrame(kmclusters)
 
-eng_centroids = pd.DataFrame(kmodes.cluster_centroids_,)
+eng_centroids = pd.DataFrame(kmodes.cluster_centroids_)
+kmodcl = pd.DataFrame(kmodes.labels_)
+
+
+print("Absolute frequency  cluster")
+print(kluster[0].value_counts())
+eng_centroids = pd.DataFrame(pd.concat([pd.DataFrame(eng_centroids),kluster[0].value_counts()],axis=1))
+
+
 
 ###########
 #MEANSHIFT#
@@ -79,6 +93,20 @@ E_MS_n_clusters=len(e_label_unique)
 
 E_MS_Clusters=scaler.inverse_transform(X=E_MS_cluster_centers)
 
+E_pcaMS = PCA(n_components=2).fit(Engage_Normalized)
+E_pca_2dMS=E_pcaMS.transform(Engage_Normalized)
+for p in range(0,E_pca_2dMS.shape[0]):
+    if E_MS_labels[p] == 0:
+        c1 = plt.scatter(E_pca_2dMS[p,0],E_pca_2dMS[p,1], c='r', marker='+')
+    if E_MS_labels[p] == 1:
+        c2 = plt.scatter(E_pca_2dMS[p,0],E_pca_2dMS[p,1], c='g', marker='*')
+    if E_MS_labels[p] == 2:
+        c3 = plt.scatter(E_pca_2dMS[p,0],E_pca_2dMS[p,1], c='b', marker='H')
+
+plt.legend([c1,c2,c3], ['C1','C2','C3'])
+plt.title('MS')
+plt.show()
+
 ########
 #DBSCAN#
 ########
@@ -91,7 +119,7 @@ unique_clusters , counts_clusters = np.unique(E_dbscan.labels_, return_counts = 
 
 E_pcaDBS = PCA(n_components=2).fit(Engage_Normalized)
 E_pca_2dDBS = E_pcaDBS.transform(Engage_Normalized)
-for i in range(0, pca_2dDBS.shape[0]):
+for i in range(0, E_pca_2dDBS.shape[0]):
     if E_dbs_labels[i] == 0:
         c1 = plt.scatter(E_pca_2dDBS[i,0],E_pca_2dDBS[i,1],c='r',marker='+')
     elif E_dbs_labels[i] == 1:
@@ -107,8 +135,8 @@ for i in range(0, pca_2dDBS.shape[0]):
     elif E_dbs_labels[i] == -1:
         c3 = plt.scatter(E_pca_2dDBS[i,0],E_pca_2dDBS[i,1],c='b',marker='*')
 
-plt.legend([c1, c2, c3], ['Cluster 1', 'Cluster 2','Noise'])
-plt.title('DBSCAN finds N clusters and noise')
+plt.legend([c1, c3], ['Cluster 1','Noise'])
+plt.title('DBSCAN finds 1 clusters and noise')
 plt.show()
 
 
@@ -121,10 +149,6 @@ pca = PCA(n_components= Work_engage.shape[1])
 principalComponents = pca.fit_transform(Engage_Normalized)
 
 E_a = pca.inverse_transform(principalComponents)
-
-
-
-
 
 
 ####
